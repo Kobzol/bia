@@ -1,0 +1,32 @@
+package algorithm
+
+import cviko2.Function
+
+interface FitnessEvaluator
+{
+    fun evaluate(individual: Individual, assign: Boolean = true): Float
+}
+
+class FunctionFitness(private val function: Function,
+                      private val maximize: Boolean = false): FitnessEvaluator
+{
+    override fun evaluate(individual: Individual, assign: Boolean): Float
+    {
+        val fitness = this.normalizeFitness(this.function.calculate(*individual.data))
+        if (assign)
+        {
+            individual.fitness = fitness
+        }
+        return fitness
+
+    }
+
+    private fun normalizeFitness(fitness: Float): Float
+    {
+        return if (this.maximize)
+        {
+            fitness
+        }
+        else -fitness
+    }
+}

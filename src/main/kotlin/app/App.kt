@@ -1,37 +1,29 @@
 package app
 
-import org.sf.surfaceplot.SurfaceCanvas
-import java.awt.BorderLayout
-import javax.swing.JFrame
-import javax.swing.WindowConstants
+import app.gui.ControlPanel
+import app.gui.MainScreen
 
-
-// https://sourceforge.net/p/javasurfaceplot/code/HEAD/tree/trunk/src/net/sf/surfaceplot/
-class App: JFrame("BIA")
+class App
 {
-     fun start()
+    private val computationManager: ComputationManager
+    private val mainScreen: MainScreen
+
+    init
     {
         val functions = createFunctions()
-        val combobox = createFunctionCombobox(functions)
+        val algorithms = createAlgorithms()
 
-        val canvas = SurfaceCanvas()
-        canvas.setModel(functions[0].model)
+        this.computationManager = ComputationManager(
+                functions[0].model,
+                algorithms[0].algorithmType,
+                ControlPanel.DEFAULT_ITERATIONS
+        )
+        this.mainScreen = MainScreen(functions, algorithms, this.computationManager)
+    }
 
-        combobox.addActionListener {
-            val item = combobox.selectedItem as FunctionComboItem
-            canvas.setModel(item.model)
-            canvas.repaint()
-        }
-
-        this.contentPane.layout = BorderLayout()
-        this.contentPane.add(combobox, BorderLayout.PAGE_START)
-        this.contentPane.add(canvas, BorderLayout.CENTER)
-        canvas.repaint()
-
-        this.setSize(800, 600)
-
-        this.defaultCloseOperation = WindowConstants.EXIT_ON_CLOSE
-        this.isVisible = true
+    fun show()
+    {
+        this.mainScreen.isVisible = true
     }
 
     companion object
@@ -39,7 +31,7 @@ class App: JFrame("BIA")
         @JvmStatic fun main(vararg args: String)
         {
             val app = App()
-            app.start()
+            app.show()
         }
     }
 }
