@@ -24,8 +24,8 @@ class FunctionModel(val function: Function,
     }
     override fun getExtraColor(): Color = this.color
 
-    override fun getDispDivisions(): Int = 75
-    override fun getCalcDivisions(): Int = 75
+    override fun getDispDivisions(): Int = 150
+    override fun getCalcDivisions(): Int = 150
     override fun getPlotMode(): Int = ISurfacePlotModel.PLOT_MODE_DUALSHADE
 
     override fun getXMin(): Float = this.boundsX.min

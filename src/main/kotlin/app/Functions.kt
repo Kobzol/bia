@@ -14,6 +14,7 @@ fun createFunctions(): Array<FunctionComboItem>
     val boundsZ = Bounds(0.0f, 40.0f)
 
     return arrayOf(
+            FunctionComboItem(FunctionModel(Pareto(), Bounds(0f, 1f), Bounds(0f, 1f), Bounds(-0.15f, 0.2f)), "Pareto"),
             FunctionComboItem(FunctionModel(Rastrigin(), Bounds(-5.12f, 5.12f), Bounds(-5.12f, 5.12f), boundsZ), "Rastrigin"),
             FunctionComboItem(FunctionModel(Ackley(), Bounds(-5f, 5f), Bounds(-5f, 5f), boundsZ), "Ackley"),
             FunctionComboItem(FunctionModel(Sphere(), Bounds(-4.5f, 4.5f), Bounds(-4.5f, 4.5f), boundsZ), "Sphere"),

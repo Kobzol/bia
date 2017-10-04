@@ -103,3 +103,19 @@ class Matyas: Function
         return (0.26 * (x*x + y*y) - 0.48*x*y).toFloat()
     }
 }
+
+class Pareto: Function
+{
+    override fun calculate(vararg args: Float): Float
+    {
+        val f = args[0].toDouble()
+        val g = args[1].toDouble() + 10.0
+        val ga = 11.0
+        val gb = 12.0
+        val F = 1
+
+        val alfa = 0.25 + 3.75 * ((g - gb) / (ga - gb))
+
+        return (Math.pow(f / g, alfa) - (f / g) * Math.sin(Math.PI * F * f * g)).toFloat()
+    }
+}
