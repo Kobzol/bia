@@ -2,6 +2,7 @@ package app
 
 import algorithm.Algorithm
 import algorithm.AlgorithmType
+import algorithm.AlgorithmRunner
 import algorithm.FunctionFitness
 import algorithm.blindsearch.BlindSearch
 import algorithm.Population
@@ -67,10 +68,12 @@ class ComputationManager(model: FunctionModel,
     private fun createComputation(): Computation
     {
         val algorithm = this.createAlgorithm()
-        return Computation(algorithm,
-                algorithm
-                        .iterate(this.iterationCount)
-                        .subscribeOn(Schedulers.computation()))
+        return Computation(
+                algorithm,
+                AlgorithmRunner()
+                        .iterate(algorithm, this.iterationCount)
+                        .subscribeOn(Schedulers.computation())
+        )
     }
 
     private fun createAlgorithm(): Algorithm
