@@ -5,6 +5,14 @@ import cviko2.Function
 interface FitnessEvaluator
 {
     fun evaluate(individual: Individual, assign: Boolean = true): Float
+    fun evaluate(population: Population, assign: Boolean = true)
+    {
+        population.parallelStream().forEach { this.evaluate(it, assign) }
+    }
+    fun findBest(population: Population): Individual
+    {
+        return population.maxBy { it.fitness!! }!!
+    }
 }
 
 class FunctionFitness(private val function: Function,

@@ -1,6 +1,7 @@
-package app
+package app.gui
 
 import algorithm.Bounds
+import app.FunctionModel
 import cviko2.*
 
 class FunctionComboItem(val model: FunctionModel,

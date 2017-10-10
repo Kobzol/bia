@@ -2,10 +2,15 @@ package algorithm
 
 typealias Population = List<Individual>
 
-class Individual(val data: FloatArray)
+class Individual(val data: FloatArray): Comparable<Individual>
 {
     var fitness: Float? = null
     fun hasFitness() = this.fitness != null
+
+    override fun compareTo(other: Individual): Int
+    {
+        return this.fitness!!.compareTo(other.fitness!!)
+    }
 
     override fun toString(): String
     {

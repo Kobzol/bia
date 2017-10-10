@@ -7,26 +7,26 @@ class BlindSearch(bounds: Array<Bounds>,
     : Algorithm(bounds, evaluator)
 {
     override val population: Population
-        get() = listOf(this.bestIndividual)
+        get() = listOf(this.best)
 
-    private var bestIndividual: Individual
+    private var best: Individual
 
     init
     {
         val population = PopulationGenerator.generateAreaPopulation(1, bounds)
         this.evaluator.evaluate(population[0])
-        this.bestIndividual = population[0]
+        this.best = population[0]
     }
 
     override fun runIteration(): Population
     {
         val generated: Population = PopulationGenerator.generateAreaPopulation(1, this.bounds)
         val fitness = this.evaluator.evaluate(generated[0], true)
-        if (fitness > this.bestIndividual.fitness!!)
+        if (fitness > this.best.fitness!!)
         {
-            this.bestIndividual = generated[0]
+            this.best = generated[0]
         }
 
-        return listOf(this.bestIndividual)
+        return listOf(this.best)
     }
 }

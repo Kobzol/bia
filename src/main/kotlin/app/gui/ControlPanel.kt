@@ -1,10 +1,11 @@
 package app.gui
 
-import algorithm.AlgorithmType
-import app.AlgorithmComboItem
+import algorithm.Algorithm
+import algorithm.FunctionFitness
 import app.ComputationManager
-import app.FunctionComboItem
 import app.FunctionModel
+import app.SubscriptionManager
+import app.gui.algorithm.AlgorithmSettings
 import javax.swing.*
 import javax.swing.event.DocumentEvent
 import javax.swing.event.DocumentListener
@@ -17,8 +18,11 @@ class ControlPanel(functions: Array<FunctionComboItem>,
     private val algorithmCombobox: JComboBox<AlgorithmComboItem>
 
     private val iterationsField: JTextField
+    private val algorithmContainer: JPanel
     private val startButton: JButton
     private val stopButton: JButton
+
+    private val subscriptionManager = SubscriptionManager()
 
     init
     {
@@ -31,7 +35,8 @@ class ControlPanel(functions: Array<FunctionComboItem>,
 
         this.algorithmCombobox = createCombobox(algorithms)
         this.algorithmCombobox.addActionListener{
-            this.computationManager.algorithmType = this.getSelectedAlgorithm()
+            this.computationManager.stopComputation()
+            this.createAlgorithmGUI(this.getSelectedAlgorithmSettings())
         }
 
         this.iterationsField = JTextField(DEFAULT_ITERATIONS.toString())
@@ -50,9 +55,13 @@ class ControlPanel(functions: Array<FunctionComboItem>,
             }
         })
 
+        this.algorithmContainer = JPanel()
+        this.algorithmContainer.layout = BoxLayout(this.algorithmContainer, BoxLayout.PAGE_AXIS)
+        this.createAlgorithmGUI(algorithms[0].settings)
+
         this.startButton = JButton("Start")
         this.startButton.addActionListener {
-            this.computationManager.startComputation()
+            this.computationManager.startComputation(this.createAlgorithm())
         }
 
         this.stopButton = JButton("Stop")
@@ -64,6 +73,7 @@ class ControlPanel(functions: Array<FunctionComboItem>,
         this.add(this.functionCombobox)
         this.add(this.algorithmCombobox)
         this.add(this.iterationsField)
+        this.add(this.algorithmContainer)
         this.add(this.startButton)
         this.add(this.stopButton)
 
@@ -73,13 +83,35 @@ class ControlPanel(functions: Array<FunctionComboItem>,
         }
     }
 
+    private fun createAlgorithmGUI(settings: AlgorithmSettings)
+    {
+        this.subscriptionManager.unsubscribe()
+
+        this.algorithmContainer.removeAll()
+        settings.createGUI(this.algorithmContainer)
+
+        this.subscriptionManager += settings.onChange.subscribe {
+            this.computationManager.stopComputation()
+        }
+        this.algorithmContainer.repaint()
+    }
+
+    private fun createAlgorithm(): Algorithm
+    {
+        val settings = this.getSelectedAlgorithmSettings()
+        val model = this.getSelectedModel()
+        val evaluator = FunctionFitness(model.function)
+
+        return settings.createAlgorithm(model, evaluator)
+    }
+
     private fun getSelectedModel(): FunctionModel
     {
         return (this.functionCombobox.selectedItem as FunctionComboItem).model
     }
-    private fun getSelectedAlgorithm(): AlgorithmType
+    private fun getSelectedAlgorithmSettings(): AlgorithmSettings
     {
-        return (this.algorithmCombobox.selectedItem as AlgorithmComboItem).algorithmType
+        return (this.algorithmCombobox.selectedItem as AlgorithmComboItem).settings
     }
     private fun getSelectedIterations(): Int
     {

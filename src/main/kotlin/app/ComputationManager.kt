@@ -1,10 +1,7 @@
 package app
 
 import algorithm.Algorithm
-import algorithm.AlgorithmType
 import algorithm.AlgorithmRunner
-import algorithm.FunctionFitness
-import algorithm.blindsearch.BlindSearch
 import algorithm.Population
 import io.reactivex.Observable
 import io.reactivex.schedulers.Schedulers
@@ -12,7 +9,6 @@ import io.reactivex.subjects.PublishSubject
 import java.util.concurrent.TimeUnit
 
 class ComputationManager(model: FunctionModel,
-                         var algorithmType: AlgorithmType,
                          var iterationCount: Int)
 {
     private val modelChangedStream = PublishSubject.create<FunctionModel>()
@@ -32,11 +28,11 @@ class ComputationManager(model: FunctionModel,
     val onStateChanged: Observable<Boolean> = this.computationStateStream
     val onPopulationGenerated: Observable<Population> = this.populationStream
 
-    fun startComputation()
+    fun startComputation(algorithm: Algorithm)
     {
         System.out.println("Computation started")
 
-        val computation = this.createComputation()
+        val computation = this.createComputation(algorithm)
         this.computationStateStream.onNext(true)
 
         this.subManager += computation.populationStream
@@ -65,25 +61,13 @@ class ComputationManager(model: FunctionModel,
         this.computationStateStream.onNext(false)
     }
 
-    private fun createComputation(): Computation
+    private fun createComputation(algorithm: Algorithm): Computation
     {
-        val algorithm = this.createAlgorithm()
         return Computation(
                 algorithm,
                 AlgorithmRunner()
                         .iterate(algorithm, this.iterationCount)
                         .subscribeOn(Schedulers.computation())
         )
-    }
-
-    private fun createAlgorithm(): Algorithm
-    {
-        val bounds = arrayOf(this.model.boundsX, this.model.boundsY)
-        val evaluator = FunctionFitness(model.function, false)
-
-        return when (this.algorithmType)
-        {
-            AlgorithmType.BlindSearch -> BlindSearch(bounds, evaluator)
-        }
     }
 }

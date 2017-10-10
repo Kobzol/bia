@@ -5,4 +5,6 @@ abstract class Algorithm(val bounds: Array<Bounds>,
 {
     abstract val population: Population
     abstract fun runIteration(): Population
+
+    fun getBestIndividual(): Individual = this.evaluator.findBest(this.population)
 }

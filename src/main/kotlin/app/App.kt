@@ -2,6 +2,8 @@ package app
 
 import app.gui.ControlPanel
 import app.gui.MainScreen
+import app.gui.createAlgorithms
+import app.gui.createFunctions
 
 class App
 {
@@ -15,7 +17,6 @@ class App
 
         this.computationManager = ComputationManager(
                 functions[0].model,
-                algorithms[0].algorithmType,
                 ControlPanel.DEFAULT_ITERATIONS
         )
         this.mainScreen = MainScreen(functions, algorithms, this.computationManager)
