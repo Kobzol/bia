@@ -27,5 +27,17 @@ class PopulationGenerator
             }
             return population
         }
+        fun generateAreaPopulationDiscrete(size: Int, bounds: Array<Bounds>): List<Individual>
+        {
+            val random = Random()
+            val population = ArrayList<Individual>()
+            for (i in 0 until size)
+            {
+                population.add(Individual(bounds.map {
+                    (it.min.toInt() + random.nextInt((it.max - it.min).toInt())).toFloat()
+                }.toFloatArray()))
+            }
+            return population
+        }
     }
 }

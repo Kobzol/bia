@@ -38,6 +38,12 @@ class MainScreen(functions: Array<FunctionComboItem>,
         this.subManager += computationManager.onPopulationGenerated.subscribe { population ->
             this.drawPopulation(computationManager.model, population)
         }
+        this.subManager += this.controlPanel.onPopulateGeneration.subscribe { size ->
+            val model = this.controlPanel.getSelectedModel()
+            this.drawPopulation(model,
+                    algorithm.PopulationGenerator.generateAreaPopulationDiscrete(size,
+                            arrayOf(model.boundsX, model.boundsY)))
+        }
     }
 
     private fun drawPopulation(model: FunctionModel, population: Population)
