@@ -13,6 +13,7 @@ abstract class AlgorithmSettings(val name: String)
 
     val onChange: Observable<AlgorithmSettings> = this.changeStream
 
+    abstract fun destroyGUI()
     abstract fun createGUI(root: JComponent)
     abstract fun createAlgorithm(model: FunctionModel, evaluator: FitnessEvaluator): Algorithm
 }

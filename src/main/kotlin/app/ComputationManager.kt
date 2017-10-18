@@ -1,8 +1,6 @@
 package app
 
-import algorithm.Algorithm
-import algorithm.AlgorithmRunner
-import algorithm.Population
+import algorithm.*
 import io.reactivex.Observable
 import io.reactivex.schedulers.Schedulers
 import io.reactivex.subjects.PublishSubject
@@ -16,6 +14,12 @@ class ComputationManager(model: FunctionModel,
     private val populationStream = PublishSubject.create<Population>()
 
     private val subManager = SubscriptionManager()
+
+    var generation: Population? = null
+        set(value) {
+            field = value
+            this.populationStream.onNext(value!!)
+        }
 
     var model: FunctionModel = model
         set(value) {
@@ -38,10 +42,10 @@ class ComputationManager(model: FunctionModel,
         this.subManager += computation.populationStream
                 .sample(250, TimeUnit.MILLISECONDS)
                 .subscribe({ population ->
-                    this.populationStream.onNext(population)
+                    this.generation = population
                 }, System.err::println, {
                     this.stopComputation()
-                    this.populationStream.onNext(computation.algorithm.population)
+                    this.generation = computation.algorithm.population
 
                     this.printBestIndividual(computation.algorithm.population)
                 })

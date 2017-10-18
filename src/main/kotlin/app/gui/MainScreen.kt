@@ -38,17 +38,19 @@ class MainScreen(functions: Array<FunctionComboItem>,
         this.subManager += computationManager.onPopulationGenerated.subscribe { population ->
             this.drawPopulation(computationManager.model, population)
         }
-        this.subManager += this.controlPanel.onPopulateGeneration.subscribe { size ->
-            val model = this.controlPanel.getSelectedModel()
-            this.drawPopulation(model,
-                    algorithm.PopulationGenerator.generateAreaPopulationDiscrete(size,
-                            arrayOf(model.boundsX, model.boundsY)))
-        }
     }
 
     private fun drawPopulation(model: FunctionModel, population: Population)
     {
-        model.extraVertices = population.map {
+        var best = population
+        if (population[0].hasFitness())
+        {
+            best = population.sortedDescending()
+        }
+
+        best = best.take(100)
+
+        model.extraVertices = best.map {
             Point3D(it.data[0], it.data[1], model.function.calculate(*it.data))
         }.toTypedArray()
 

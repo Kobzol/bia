@@ -1,16 +1,12 @@
 package app.gui
 
 import algorithm.Algorithm
-import algorithm.Bounds
 import algorithm.FunctionFitness
 import algorithm.PopulationGenerator
 import app.ComputationManager
 import app.FunctionModel
 import app.SubscriptionManager
 import app.gui.algorithm.AlgorithmSettings
-import io.reactivex.Observable
-import io.reactivex.subjects.PublishSubject
-import surfaceplot.Point3D
 import javax.swing.*
 import javax.swing.event.DocumentEvent
 import javax.swing.event.DocumentListener
@@ -29,10 +25,6 @@ class ControlPanel(functions: Array<FunctionComboItem>,
     private val stopButton: JButton
 
     private val subscriptionManager = SubscriptionManager()
-
-    private val populationGenerateStream = PublishSubject.create<Int>()
-
-    val onPopulateGeneration: Observable<Int> = this.populationGenerateStream
 
     init
     {
@@ -71,7 +63,9 @@ class ControlPanel(functions: Array<FunctionComboItem>,
 
         this.generatePopulationButton = JButton("Generate population")
         this.generatePopulationButton.addActionListener {
-            this.populationGenerateStream.onNext(100)
+            val model = this.getSelectedModel()
+            val generation = PopulationGenerator.generateAreaPopulation(1000, arrayOf(model.boundsY, model.boundsY))
+            this.computationManager.generation = generation
         }
 
         this.startButton = JButton("Start")
@@ -116,13 +110,14 @@ class ControlPanel(functions: Array<FunctionComboItem>,
     {
         this.subscriptionManager.unsubscribe()
 
+        settings.destroyGUI()
         this.algorithmContainer.removeAll()
         settings.createGUI(this.algorithmContainer)
 
         this.subscriptionManager += settings.onChange.subscribe {
             this.computationManager.stopComputation()
         }
-        this.algorithmContainer.repaint()
+        this.algorithmContainer.revalidate()
     }
 
     private fun createAlgorithm(): Algorithm

@@ -3,8 +3,6 @@ package app.gui.algorithm
 import algorithm.Algorithm
 import algorithm.FitnessEvaluator
 import app.FunctionModel
-import io.reactivex.Observable
-import io.reactivex.subjects.PublishSubject
 import javax.swing.JComponent
 
 class SimpleAlgorithmSettings(name: String,
@@ -13,6 +11,10 @@ class SimpleAlgorithmSettings(name: String,
     : AlgorithmSettings(name)
 {
     override fun createGUI(root: JComponent)
+    {
+
+    }
+    override fun destroyGUI()
     {
 
     }

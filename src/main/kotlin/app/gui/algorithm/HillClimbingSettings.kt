@@ -14,11 +14,13 @@ class HillClimbingSettings(name: String): AlgorithmSettings(name)
     private val defaultIterations = 100
 
     private var populationSize: JTextField? = null
+    private lateinit var listener: DocumentListener
 
     override fun createGUI(root: JComponent)
     {
         this.populationSize = JTextField(this.defaultIterations.toString())
-        this.populationSize?.document?.addDocumentListener(object : DocumentListener {
+
+        this.listener = object : DocumentListener {
             override fun changedUpdate(e: DocumentEvent?)
             {
                 changeStream.onNext(this@HillClimbingSettings)
@@ -31,9 +33,17 @@ class HillClimbingSettings(name: String): AlgorithmSettings(name)
             {
                 changeStream.onNext(this@HillClimbingSettings)
             }
-        })
+        }
+        this.populationSize?.document?.addDocumentListener(this.listener)
 
         root.add(this.populationSize)
+    }
+    override fun destroyGUI()
+    {
+        this.populationSize?.let {
+            it.document?.removeDocumentListener(this.listener)
+            this.populationSize = null
+        }
     }
 
     override fun createAlgorithm(model: FunctionModel, evaluator: FitnessEvaluator): Algorithm
