@@ -64,7 +64,7 @@ class ControlPanel(functions: Array<FunctionComboItem>,
         this.generatePopulationButton = JButton("Generate population")
         this.generatePopulationButton.addActionListener {
             val model = this.getSelectedModel()
-            val generation = PopulationGenerator.generateAreaPopulation(1000, arrayOf(model.boundsY, model.boundsY))
+            val generation = PopulationGenerator().generateAreaPopulation(1000, arrayOf(model.boundsY, model.boundsY))
             this.computationManager.generation = generation
         }
 

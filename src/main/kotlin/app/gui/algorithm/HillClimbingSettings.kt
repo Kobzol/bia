@@ -50,7 +50,7 @@ class HillClimbingSettings(name: String): AlgorithmSettings(name)
     {
         return HillClimbing(
                 this.populationSize?.text?.toInt() ?: this.defaultIterations,
-                1.0f,
+                0.5f,
                 arrayOf(model.boundsX, model.boundsY),
                 evaluator
         )

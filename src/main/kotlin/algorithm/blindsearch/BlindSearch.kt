@@ -6,27 +6,45 @@ class BlindSearch(bounds: Array<Bounds>,
                   evaluator: FitnessEvaluator)
     : Algorithm(bounds, evaluator)
 {
-    override val population: Population
-        get() = listOf(this.best)
-
-    private var best: Individual
+    private val generator = PopulationGenerator()
+    override var population: Population = arrayListOf()
 
     init
     {
-        val population = PopulationGenerator.generateAreaPopulation(1, bounds)
-        this.evaluator.evaluate(population[0])
-        this.best = population[0]
+        val population = this.generator.generateAreaPopulation(1000, bounds)
+        this.assignBest(population)
+    }
+
+    private fun assignBest(population: Population)
+    {
+        this.evaluator.evaluate(population, true)
+
+        val best = population.sortedDescending().take(50)
+
+        if (this.population.isEmpty())
+        {
+            this.population = best
+        }
+        else this.population = best.zip(this.population).map { pair ->
+            if (pair.first.fitness!! > pair.second.fitness!!) { pair.first } else { pair.second }
+        }
     }
 
     override fun runIteration(): Population
     {
-        val generated: Population = PopulationGenerator.generateAreaPopulation(1, this.bounds)
-        val fitness = this.evaluator.evaluate(generated[0], true)
-        if (fitness > this.best.fitness!!)
+        val generated: Population = this.generator.generateAreaPopulation(1000, this.bounds)
+        val mutPop = this.population as ArrayList<Individual>
+
+        for (i in 0 until this.population.size)
         {
-            this.best = generated[0]
+            val bestLocal = this.generator.generateAreaPopulationAround(100, this.population[i],
+                    (this.bounds[0].max - this.bounds[0].min) / 100.0f)
+            this.evaluator.evaluate(bestLocal, true)
+            mutPop[i] = (bestLocal + listOf(this.population[i])).maxBy { it.fitness!! }!!
         }
 
-        return listOf(this.best)
+        this.assignBest(generated)
+
+        return this.population
     }
 }

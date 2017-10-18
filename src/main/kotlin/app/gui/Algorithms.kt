@@ -14,9 +14,9 @@ class AlgorithmComboItem(val settings: AlgorithmSettings)
 fun createAlgorithms(): Array<AlgorithmComboItem>
 {
     return arrayOf(
-            AlgorithmComboItem(HillClimbingSettings("Hill climbing")),
             AlgorithmComboItem(SimpleAlgorithmSettings("Blind search", { model, evaluator ->
                 BlindSearch(arrayOf(model.boundsX, model.boundsY), FunctionFitness(model.function))
-            } ))
+            } )),
+            AlgorithmComboItem(HillClimbingSettings("Hill climbing"))
     )
 }
