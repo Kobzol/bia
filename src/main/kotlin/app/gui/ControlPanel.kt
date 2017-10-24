@@ -7,6 +7,7 @@ import app.ComputationManager
 import app.FunctionModel
 import app.SubscriptionManager
 import app.gui.algorithm.AlgorithmSettings
+import java.awt.Dimension
 import javax.swing.*
 import javax.swing.event.DocumentEvent
 import javax.swing.event.DocumentListener
@@ -28,7 +29,7 @@ class ControlPanel(functions: Array<FunctionComboItem>,
 
     init
     {
-        this.layout = BoxLayout(this, BoxLayout.PAGE_AXIS)
+        this.layout = BoxLayout(this, BoxLayout.Y_AXIS)
 
         this.functionCombobox = createCombobox(functions)
         this.functionCombobox.addActionListener {
