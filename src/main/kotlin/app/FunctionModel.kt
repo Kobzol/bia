@@ -14,6 +14,8 @@ class FunctionModel(val function: Function,
 {
     private var vertices: Array<Point3D> = arrayOf()
 
+    val bounds: Array<Bounds> = arrayOf(this.boundsX, this.boundsY)
+
     override fun calculateZ(x: Float, y: Float): Float
         = this.function.calculate(x, y)
 

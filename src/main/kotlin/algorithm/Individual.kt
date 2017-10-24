@@ -2,7 +2,7 @@ package algorithm
 
 typealias Population = List<Individual>
 
-class Individual(val data: FloatArray): Comparable<Individual>
+class Individual(var data: FloatArray): Comparable<Individual>
 {
     var fitness: Float? = null
     fun hasFitness() = this.fitness != null
