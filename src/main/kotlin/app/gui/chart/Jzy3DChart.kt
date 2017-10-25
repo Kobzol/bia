@@ -70,7 +70,7 @@ class Jzy3DChart(model: FunctionModel): SurfaceChart
         val colors = population.map { Color(1.0f, 0.0f, 0.0f) }.toTypedArray()
         return Scatter(population.map {
             Coord3d(it.data[0], it.data[1], model.function.calculate(*it.data))
-        }.toTypedArray(), colors)
+        }.toTypedArray(), colors, 3.0f)
     }
 
     private fun createSurface(model: FunctionModel): Shape

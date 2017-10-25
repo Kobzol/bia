@@ -2,10 +2,7 @@ package app.gui
 
 import algorithm.FunctionFitness
 import algorithm.blindsearch.BlindSearch
-import app.gui.algorithm.AlgorithmSettings
-import app.gui.algorithm.HillClimbingSettings
-import app.gui.algorithm.SOMASettings
-import app.gui.algorithm.SimpleAlgorithmSettings
+import app.gui.algorithm.*
 
 class AlgorithmComboItem(val settings: AlgorithmSettings)
 {
@@ -15,6 +12,7 @@ class AlgorithmComboItem(val settings: AlgorithmSettings)
 fun createAlgorithms(): Array<AlgorithmComboItem>
 {
     return arrayOf(
+            AlgorithmComboItem(SimulatedAnnealingSettings("Simulated annealing")),
             AlgorithmComboItem(SOMASettings("SOMA")),
             AlgorithmComboItem(SimpleAlgorithmSettings("Blind search", { model, evaluator ->
                 BlindSearch(arrayOf(model.boundsX, model.boundsY), FunctionFitness(model.function))

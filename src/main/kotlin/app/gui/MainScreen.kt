@@ -4,6 +4,7 @@ import algorithm.Population
 import app.ComputationManager
 import app.FunctionModel
 import app.SubscriptionManager
+import app.gui.chart.ChartType
 import app.gui.chart.Jzy3DChart
 import app.gui.chart.SurfaceChart
 import app.gui.chart.SurfacePlotChart
@@ -19,12 +20,13 @@ class MainScreen(functions: Array<FunctionComboItem>,
     private var chart: SurfaceChart
     private val controlPanel: ControlPanel = ControlPanel(functions, algorithms, computationManager)
     private val subManager = SubscriptionManager()
+    private var lastPopulation: Population = listOf()
 
     init
     {
         this.contentPane.layout = BorderLayout()
 
-        this.chart = SurfacePlotChart(functions[0].model)
+        this.chart = Jzy3DChart(functions[0].model)
 
         this.contentPane.add(this.controlPanel, BorderLayout.LINE_END)
         this.contentPane.add(this.chart.canvas, BorderLayout.CENTER)
@@ -33,6 +35,15 @@ class MainScreen(functions: Array<FunctionComboItem>,
 
         this.defaultCloseOperation = WindowConstants.EXIT_ON_CLOSE
 
+        this.subManager += this.controlPanel.onChartChanged.subscribe { type ->
+            val model = this.controlPanel.getSelectedModel()
+
+            this.contentPane.remove(this.chart.canvas)
+            this.chart = this.createChart(model, type)
+            this.contentPane.add(this.chart.canvas, BorderLayout.CENTER)
+
+            this.redrawChart(model, this.lastPopulation)
+        }
         this.subManager += computationManager.onModelChanged.subscribe { model ->
             this.redrawChart(model)
         }
@@ -51,6 +62,7 @@ class MainScreen(functions: Array<FunctionComboItem>,
         best = best.take(100)
 
         SwingUtilities.invokeLater {
+            this.lastPopulation = best
             this.redrawChart(model, best)
         }
     }
@@ -59,5 +71,14 @@ class MainScreen(functions: Array<FunctionComboItem>,
     {
         this.chart.updateModel(model, population)
         this.chart.canvas.revalidate()
+    }
+
+    private fun createChart(model: FunctionModel, type: ChartType): SurfaceChart
+    {
+        return when (type)
+        {
+            ChartType.Jzy3D -> Jzy3DChart(model)
+            ChartType.SurfacePlot -> SurfacePlotChart(model)
+        }
     }
 }

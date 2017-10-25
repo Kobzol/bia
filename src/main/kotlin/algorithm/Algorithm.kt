@@ -7,4 +7,5 @@ abstract class Algorithm(val bounds: Array<Bounds>,
     abstract fun runIteration(): Population
 
     fun getBestIndividual(): Individual = this.evaluator.findBest(this.population)
+    open fun isFinished() = false
 }

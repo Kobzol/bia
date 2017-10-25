@@ -7,6 +7,10 @@ import app.ComputationManager
 import app.FunctionModel
 import app.SubscriptionManager
 import app.gui.algorithm.AlgorithmSettings
+import app.gui.chart.ChartType
+import io.reactivex.Observable
+import io.reactivex.subjects.PublishSubject
+import java.awt.Component
 import java.awt.Dimension
 import javax.swing.*
 import javax.swing.event.DocumentEvent
@@ -16,33 +20,45 @@ class ControlPanel(functions: Array<FunctionComboItem>,
                    algorithms: Array<AlgorithmComboItem>,
                    val computationManager: ComputationManager): JPanel()
 {
-    private val functionCombobox: JComboBox<FunctionComboItem>
-    private val algorithmCombobox: JComboBox<AlgorithmComboItem>
+    private val chartCombobox: JComboBox<ChartType> = createCombobox(arrayOf(ChartType.Jzy3D, ChartType.SurfacePlot))
+    private val functionCombobox: JComboBox<FunctionComboItem> = createCombobox(functions)
+    private val algorithmCombobox: JComboBox<AlgorithmComboItem> = createCombobox(algorithms)
 
-    private val iterationsField: JTextField
-    private val generatePopulationButton: JButton
-    private val algorithmContainer: JPanel
-    private val startButton: JButton
-    private val stopButton: JButton
+    private val iterationsField: JTextField = JTextField(DEFAULT_ITERATIONS.toString())
+    private val algorithmContainer: JPanel = JPanel()
+    private val generatePopulationButton: JButton = JButton("Generate population")
+    private val startButton: JButton = JButton("Start")
+    private val stopButton: JButton = JButton("Stop")
 
     private val subscriptionManager = SubscriptionManager()
+    private val chartChangedStream = PublishSubject.create<ChartType>()
+
+    val onChartChanged: Observable<ChartType> = this.chartChangedStream
 
     init
     {
         this.layout = BoxLayout(this, BoxLayout.Y_AXIS)
+        this.preferredSize = Dimension(250, 0)
 
-        this.functionCombobox = createCombobox(functions)
+        this.chartCombobox.addActionListener {
+            this.chartChangedStream.onNext(this.chartCombobox.selectedItem as ChartType)
+        }
+        this.chartCombobox.maximumSize = Dimension(this.preferredSize.width, 20)
+        this.chartCombobox.alignmentX = Component.CENTER_ALIGNMENT
+
         this.functionCombobox.addActionListener {
             this.computationManager.model = this.getSelectedModel()
         }
+        this.functionCombobox.maximumSize = Dimension(this.preferredSize.width, 20)
+        this.functionCombobox.alignmentX = Component.CENTER_ALIGNMENT
 
-        this.algorithmCombobox = createCombobox(algorithms)
         this.algorithmCombobox.addActionListener{
             this.computationManager.stopComputation()
             this.createAlgorithmGUI(this.getSelectedAlgorithmSettings())
         }
+        this.algorithmCombobox.maximumSize = Dimension(this.preferredSize.width, 20)
+        this.algorithmCombobox.alignmentX = Component.CENTER_ALIGNMENT
 
-        this.iterationsField = JTextField(DEFAULT_ITERATIONS.toString())
         this.iterationsField.document.addDocumentListener(object : DocumentListener {
             override fun changedUpdate(e: DocumentEvent?)
             {
@@ -57,31 +73,38 @@ class ControlPanel(functions: Array<FunctionComboItem>,
                 computationManager.iterationCount = getSelectedIterations()
             }
         })
+        this.iterationsField.maximumSize = Dimension(this.preferredSize.width, 30)
+        this.iterationsField.alignmentX = Component.CENTER_ALIGNMENT
 
-        this.algorithmContainer = JPanel()
-        this.algorithmContainer.layout = BoxLayout(this.algorithmContainer, BoxLayout.PAGE_AXIS)
+        this.algorithmContainer.layout = BoxLayout(this.algorithmContainer, BoxLayout.Y_AXIS)
+        this.algorithmContainer.alignmentX = Component.CENTER_ALIGNMENT
         this.createAlgorithmGUI(algorithms[0].settings)
 
-        this.generatePopulationButton = JButton("Generate population")
         this.generatePopulationButton.addActionListener {
             val model = this.getSelectedModel()
             val generation = PopulationGenerator().generateAreaPopulation(1000, arrayOf(model.boundsY, model.boundsY))
             this.computationManager.generation = generation
         }
+        this.generatePopulationButton.alignmentX = Component.CENTER_ALIGNMENT
 
-        this.startButton = JButton("Start")
         this.startButton.addActionListener {
             this.computationManager.startComputation(this.createAlgorithm())
         }
+        this.startButton.alignmentX = Component.CENTER_ALIGNMENT
 
-        this.stopButton = JButton("Stop")
         this.stopButton.addActionListener {
             this.computationManager.stopComputation()
         }
+        this.stopButton.alignmentX = Component.CENTER_ALIGNMENT
         this.stopButton.isEnabled = false
 
+        this.add(this.chartCombobox)
         this.add(this.functionCombobox)
         this.add(this.algorithmCombobox)
+
+        val labelIterations = JLabel("Iterations:")
+        labelIterations.alignmentX = Component.CENTER_ALIGNMENT
+        this.add(labelIterations)
         this.add(this.iterationsField)
         this.add(this.algorithmContainer)
         this.add(this.generatePopulationButton)

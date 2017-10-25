@@ -10,6 +10,7 @@ class AlgorithmRunner
             for (i in 0 until count)
             {
                 observer.onNext(algorithm.runIteration())
+                if (algorithm.isFinished()) break
             }
 
             observer.onComplete()

@@ -20,7 +20,6 @@ class BlindSearch(bounds: Array<Bounds>,
         this.evaluator.evaluate(population, true)
 
         val best = population.sortedDescending().take(50)
-
         if (this.population.isEmpty())
         {
             this.population = best

@@ -4,7 +4,10 @@ import algorithm.Algorithm
 import algorithm.FitnessEvaluator
 import algorithm.hillclimbing.HillClimbing
 import app.FunctionModel
+import java.awt.Component
+import java.awt.Dimension
 import javax.swing.JComponent
+import javax.swing.JLabel
 import javax.swing.JTextField
 import javax.swing.event.DocumentEvent
 import javax.swing.event.DocumentListener
@@ -19,6 +22,8 @@ class HillClimbingSettings(name: String): AlgorithmSettings(name)
     override fun createGUI(root: JComponent)
     {
         this.populationSize = JTextField(this.defaultIterations.toString())
+        this.populationSize?.maximumSize = Dimension(280, 30)
+        this.populationSize?.alignmentX = Component.CENTER_ALIGNMENT
 
         this.listener = object : DocumentListener {
             override fun changedUpdate(e: DocumentEvent?)
@@ -36,6 +41,11 @@ class HillClimbingSettings(name: String): AlgorithmSettings(name)
         }
         this.populationSize?.document?.addDocumentListener(this.listener)
 
+        val populationLabel = JLabel("Population size:")
+        populationLabel.maximumSize = Dimension(280, 30)
+        populationLabel.alignmentX = Component.CENTER_ALIGNMENT
+
+        root.add(populationLabel)
         root.add(this.populationSize)
     }
     override fun destroyGUI()
