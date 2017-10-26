@@ -6,12 +6,14 @@ class PopulationGenerator
 {
     private val random = Random()
 
-    inline fun <T> generatePopulation(size: Int, generator: () -> T): List<T>
+    fun <T> generatePopulation(size: Int, bounds: Array<Bounds>, generator: (data: FloatArray) -> T): List<T>
     {
         val population = ArrayList<T>()
         for (i in 0 until size)
         {
-            population.add(generator())
+            population.add(generator(bounds.map {
+                it.min + this.random.nextFloat() * (it.max - it.min)
+            }.toFloatArray()))
         }
         return population
     }

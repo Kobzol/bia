@@ -10,7 +10,7 @@ interface FitnessEvaluator
     {
         population.parallelStream().forEach { this.evaluate(it, assign) }
     }
-    fun findBest(population: Population): Individual
+    fun <T : Individual> findBest(population: List<T>): T
     {
         return population.maxBy { it.fitness!! }!!
     }

@@ -12,9 +12,10 @@ class AlgorithmComboItem(val settings: AlgorithmSettings)
 fun createAlgorithms(): Array<AlgorithmComboItem>
 {
     return arrayOf(
+            AlgorithmComboItem(PSOSettings("PSO")),
             AlgorithmComboItem(SimulatedAnnealingSettings("Simulated annealing")),
             AlgorithmComboItem(SOMASettings("SOMA")),
-            AlgorithmComboItem(SimpleAlgorithmSettings("Blind search", { model, evaluator ->
+            AlgorithmComboItem(SimpleAlgorithmSettings("Blind search", { model, _ ->
                 BlindSearch(arrayOf(model.boundsX, model.boundsY), FunctionFitness(model.function))
             } )),
             AlgorithmComboItem(HillClimbingSettings("Hill climbing"))
