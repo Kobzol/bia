@@ -20,7 +20,8 @@ class HillClimbing(private val populationSize: Int, private val generationArea: 
     {
         val best = this.evaluator.findBest(this.population)
 
-        val surround = this.generator.generateAreaPopulationAround(this.populationSize, best, this.generationArea)
+        val surround = this.generator.generateAreaPopulationAround(this.populationSize, best,
+                this.bounds, this.generationArea)
         this.evaluator.evaluate(surround)
 
         val newBest = this.evaluator.findBest(surround)

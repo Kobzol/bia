@@ -40,7 +40,7 @@ class PopulationGenerator
         return population
     }
 
-    fun generateAreaPopulationAround(size: Int, individual: Individual, area: Float): Population
+    fun generateAreaPopulationAround(size: Int, individual: Individual, bounds: Array<Bounds>, area: Float): Population
     {
         return (0 until size).map {
             val coords = FloatArray(individual.data.size)
@@ -49,7 +49,8 @@ class PopulationGenerator
                 val center = individual.data[c]
                 val point = center + (this.random.nextGaussian() * area)
 
-                coords[c] = point.toFloat()
+                // clamp to bounds
+                coords[c] = Math.max(bounds[c].min, Math.min(bounds[c].max, point.toFloat()))
             }
 
             Individual(coords)

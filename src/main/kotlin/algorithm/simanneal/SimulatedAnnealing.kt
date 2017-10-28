@@ -22,7 +22,8 @@ class SimulatedAnnealing(private var temperature: Float,
 
     override fun runIteration(): Population
     {
-        val individual = this.generator.generateAreaPopulationAround(1, this.population[0], this.area)
+        val individual = this.generator.generateAreaPopulationAround(1, this.population[0],
+                this.bounds, this.area)
         this.evaluator.evaluate(individual)
 
         if (individual[0].fitness!! > this.population[0].fitness!!)
@@ -33,7 +34,8 @@ class SimulatedAnnealing(private var temperature: Float,
         {
             val nonce = this.random.nextFloat()
             val diff = population[0].fitness!! - individual[0].fitness!!
-            if (nonce < Math.exp(-(diff / this.temperature).toDouble()))
+            val chance = Math.exp(-(diff / this.temperature).toDouble())
+            if (nonce < chance)
             {
                 this.population = individual
             }

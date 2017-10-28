@@ -36,7 +36,7 @@ class BlindSearch(bounds: Array<Bounds>,
 
         for (i in 0 until this.population.size)
         {
-            val bestLocal = this.generator.generateAreaPopulationAround(100, this.population[i],
+            val bestLocal = this.generator.generateAreaPopulationAround(100, this.population[i], this.bounds,
                     (this.bounds[0].max - this.bounds[0].min) / 100.0f)
             this.evaluator.evaluate(bestLocal, true)
             mutPop[i] = (bestLocal + listOf(this.population[i])).maxBy { it.fitness!! }!!
