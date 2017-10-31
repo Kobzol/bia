@@ -8,18 +8,17 @@ import javax.swing.JComponent
 
 class PSOSettings(name: String): AlgorithmSettings(name)
 {
-    override fun destroyGUI()
-    {
-
-    }
+    private var populationSize: Int = 100
 
     override fun createGUI(root: JComponent)
     {
-
+        this.addTextbox(root, "Population size:", this.populationSize, { value ->
+            this.populationSize = value.toIntOrNull() ?: 100
+        })
     }
 
     override fun createAlgorithm(model: FunctionModel, evaluator: FitnessEvaluator): Algorithm
     {
-        return ParticleSwarmOptimization(100, model.bounds, evaluator)
+        return ParticleSwarmOptimization(this.populationSize, model.bounds, evaluator)
     }
 }

@@ -12,6 +12,7 @@ class AlgorithmComboItem(val settings: AlgorithmSettings)
 fun createAlgorithms(): Array<AlgorithmComboItem>
 {
     return arrayOf(
+            AlgorithmComboItem(GASettings("GA")),
             AlgorithmComboItem(PSOSettings("PSO")),
             AlgorithmComboItem(SimulatedAnnealingSettings("Simulated annealing")),
             AlgorithmComboItem(SOMASettings("SOMA")),

@@ -3,7 +3,8 @@ package algorithm.hillclimbing
 import algorithm.*
 import java.util.*
 
-class HillClimbing(private val populationSize: Int, private val generationArea: Float,
+class HillClimbing(private val populationSize: Int,
+                   private val generationArea: Float,
                    bounds: Array<Bounds>, evaluator: FitnessEvaluator): Algorithm(bounds, evaluator)
 {
     private val generator = PopulationGenerator()

@@ -43,7 +43,10 @@ class ComputationManager(model: FunctionModel,
                 .sample(250, TimeUnit.MILLISECONDS)
                 .subscribe({ population ->
                     this.generation = population
-                }, System.err::println, {
+                }, { error ->
+                    System.err.println(error)
+                    error.printStackTrace()
+                }, {
                     this.stopComputation()
                     this.generation = computation.algorithm.population
 
