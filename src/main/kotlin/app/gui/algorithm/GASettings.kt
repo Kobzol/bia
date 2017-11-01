@@ -2,6 +2,7 @@ package app.gui.algorithm
 
 import algorithm.Algorithm
 import algorithm.FitnessEvaluator
+import algorithm.PopulationGenerator
 import algorithm.ga.GeneticAlgorithm
 import algorithm.ga.crossover.Crossover
 import algorithm.ga.crossover.IdentityCrossover
@@ -19,7 +20,7 @@ class GASettings(name: String): AlgorithmSettings(name)
     private var elitismCount: Int = 1
     private var selection: Selection = TournamentSelection(0.1f, 20)
     private var crossover: Crossover = SinglepointCrossover(0.85f)
-    private var mutation: Mutation = OffsetMutation(0.02f)
+    private var mutation: Mutation = OffsetMutation(0.02f, arrayOf())
 
     override fun createGUI(root: JComponent)
     {
@@ -50,11 +51,11 @@ class GASettings(name: String): AlgorithmSettings(name)
     override fun createAlgorithm(model: FunctionModel, evaluator: FitnessEvaluator): Algorithm
     {
         return GeneticAlgorithm(
-                this.populationSize,
+                PopulationGenerator().generateAreaPopulation(this.populationSize, model.bounds),
                 this.elitismCount,
                 this.selection,
                 this.crossover,
-                this.mutation,
+                OffsetMutation(0.02f, model.bounds), // TODO
                 model.bounds, evaluator
         )
     }

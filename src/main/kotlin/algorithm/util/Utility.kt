@@ -18,3 +18,8 @@ fun <T> sample(list: ArrayList<T>, count: Int, random: Random): List<T>
 
     return sample
 }
+
+fun clamp(value: Float, min: Float, max: Float): Float
+{
+    return Math.max(min, Math.min(max, value))
+}

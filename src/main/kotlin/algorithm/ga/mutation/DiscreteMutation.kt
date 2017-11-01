@@ -4,7 +4,7 @@ import algorithm.Bounds
 import algorithm.Individual
 import algorithm.util.clamp
 
-class OffsetMutation(chance: Float, bounds: Array<Bounds>): Mutation(chance, bounds)
+class DiscreteMutation(chance: Float, bounds: Array<Bounds>): Mutation(chance, bounds)
 {
     override fun mutate(individual: Individual): Individual
     {
@@ -13,7 +13,11 @@ class OffsetMutation(chance: Float, bounds: Array<Bounds>): Mutation(chance, bou
         {
             if (this.shouldMutate())
             {
-                mutated.data[i] += this.random.nextGaussian().toFloat() * 0.2f
+                val min = this.bounds[i].min
+                val max = this.bounds[i].max
+                val center = (max - min) / 2
+
+                mutated.data[i] += Math.floor((this.random.nextGaussian() * center) + center).toFloat()
                 mutated.data[i] = clamp(mutated.data[i], this.bounds[i].min, this.bounds[i].max)
             }
         }

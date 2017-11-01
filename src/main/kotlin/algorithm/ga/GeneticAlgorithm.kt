@@ -7,17 +7,14 @@ import algorithm.ga.selection.Selection
 import algorithm.util.sample
 import java.util.*
 
-class GeneticAlgorithm(populationSize: Int,
+class GeneticAlgorithm(override var population: Population,
                        private val elitismCount: Int,
                        private val selection: Selection,
                        private val crossover: Crossover,
                        private val mutation: Mutation,
                        bounds: Array<Bounds>, evaluator: FitnessEvaluator): Algorithm(bounds, evaluator)
 {
-    private val generator = PopulationGenerator()
     private val random = Random()
-
-    override var population: Population = this.generator.generateAreaPopulation(populationSize, this.bounds)
 
     init
     {

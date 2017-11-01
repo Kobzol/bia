@@ -1,5 +1,6 @@
 package algorithm
 
+import algorithm.util.clamp
 import java.util.*
 
 class PopulationGenerator
@@ -50,7 +51,7 @@ class PopulationGenerator
                 val point = center + (this.random.nextGaussian() * area)
 
                 // clamp to bounds
-                coords[c] = Math.max(bounds[c].min, Math.min(bounds[c].max, point.toFloat()))
+                coords[c] = clamp(point.toFloat(), bounds[c].min, bounds[c].max)
             }
 
             Individual(coords)
