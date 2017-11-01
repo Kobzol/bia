@@ -3,14 +3,14 @@ package app.gui.algorithm
 import algorithm.Algorithm
 import algorithm.FitnessEvaluator
 import algorithm.PopulationGenerator
-import algorithm.ga.GeneticAlgorithm
-import algorithm.ga.crossover.Crossover
-import algorithm.ga.crossover.IdentityCrossover
-import algorithm.ga.crossover.SinglepointCrossover
-import algorithm.ga.mutation.Mutation
-import algorithm.ga.mutation.OffsetMutation
-import algorithm.ga.selection.Selection
-import algorithm.ga.selection.TournamentSelection
+import algorithm.evolution.ga.GeneticAlgorithm
+import algorithm.evolution.crossover.Crossover
+import algorithm.evolution.crossover.IdentityCrossover
+import algorithm.evolution.crossover.SinglepointCrossover
+import algorithm.evolution.mutation.Mutation
+import algorithm.evolution.mutation.OffsetMutation
+import algorithm.evolution.selection.Selection
+import algorithm.evolution.selection.TournamentSelection
 import app.FunctionModel
 import javax.swing.JComponent
 
@@ -20,7 +20,7 @@ class GASettings(name: String): AlgorithmSettings(name)
     private var elitismCount: Int = 1
     private var selection: Selection = TournamentSelection(0.1f, 20)
     private var crossover: Crossover = SinglepointCrossover(0.85f)
-    private var mutation: Mutation = OffsetMutation(0.02f, arrayOf())
+    private var mutationType: MutationType = MutationType.Offset
 
     override fun createGUI(root: JComponent)
     {
@@ -41,10 +41,10 @@ class GASettings(name: String): AlgorithmSettings(name)
         ), { value ->
             this.crossover = value
         })
-        this.addCombobox<Mutation>(root, "Mutation:", arrayOf(
-                SettingsComboItem("Offset", this.mutation)
+        this.addCombobox<MutationType>(root, "Mutation:", arrayOf(
+                SettingsComboItem("Offset", this.mutationType)
         ), { value ->
-            this.mutation = value
+            this.mutationType = value
         })
     }
 
@@ -55,8 +55,17 @@ class GASettings(name: String): AlgorithmSettings(name)
                 this.elitismCount,
                 this.selection,
                 this.crossover,
-                OffsetMutation(0.02f, model.bounds), // TODO
+                this.createMutation(this.mutationType, model),
                 model.bounds, evaluator
         )
+    }
+
+    private fun createMutation(type: MutationType, model: FunctionModel): Mutation
+    {
+        return when (type)
+        {
+            MutationType.Offset -> OffsetMutation(0.05f, model.bounds)
+            else -> OffsetMutation(0.05f, model.bounds)
+        }
     }
 }

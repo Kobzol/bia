@@ -17,7 +17,8 @@ class App
 
         this.computationManager = ComputationManager(
                 functions[0].model,
-                ControlPanel.DEFAULT_ITERATIONS
+                ControlPanel.DEFAULT_ITERATIONS,
+                false
         )
         this.mainScreen = MainScreen(functions, algorithms, this.computationManager)
     }

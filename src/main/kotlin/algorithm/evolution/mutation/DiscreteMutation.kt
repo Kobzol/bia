@@ -1,17 +1,22 @@
-package algorithm.ga.mutation
+package algorithm.evolution.mutation
 
 import algorithm.Bounds
 import algorithm.Individual
+import algorithm.Population
 import algorithm.util.clamp
+import java.util.*
 
-class DiscreteMutation(chance: Float, bounds: Array<Bounds>): Mutation(chance, bounds)
+class DiscreteMutation(private val chance: Float,
+                       private val bounds: Array<Bounds>): Mutation
 {
-    override fun mutate(individual: Individual): Individual
+    private val random = Random()
+
+    override fun mutate(individual: Individual, population: Population): Individual
     {
         val mutated = Individual(individual.data.clone())
         for (i in individual.data.indices)
         {
-            if (this.shouldMutate())
+            if (this.random.nextFloat() < this.chance)
             {
                 val min = this.bounds[i].min
                 val max = this.bounds[i].max

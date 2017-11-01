@@ -1,4 +1,4 @@
-package algorithm.ga.crossover
+package algorithm.evolution.crossover
 
 import algorithm.Individual
 import algorithm.Population
@@ -6,7 +6,7 @@ import java.util.*
 
 abstract class Crossover(private val chance: Float)
 {
-    private val random = Random()
+    protected val random = Random()
 
     abstract fun crossover(parents: Population, individual: Individual): Individual
 

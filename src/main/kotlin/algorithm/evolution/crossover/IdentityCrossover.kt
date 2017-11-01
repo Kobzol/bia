@@ -1,4 +1,4 @@
-package algorithm.ga.crossover
+package algorithm.evolution.crossover
 
 import algorithm.Individual
 import algorithm.Population

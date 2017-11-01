@@ -2,10 +2,10 @@ package vrp
 
 import algorithm.Bounds
 import algorithm.PopulationGenerator
-import algorithm.ga.GeneticAlgorithm
-import algorithm.ga.crossover.SinglepointCrossover
-import algorithm.ga.mutation.DiscreteMutation
-import algorithm.ga.selection.TournamentSelection
+import algorithm.evolution.ga.GeneticAlgorithm
+import algorithm.evolution.crossover.SinglepointCrossover
+import algorithm.evolution.mutation.DiscreteMutation
+import algorithm.evolution.selection.TournamentSelection
 import kotlin.system.exitProcess
 
 class VRP

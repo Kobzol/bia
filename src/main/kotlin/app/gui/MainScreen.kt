@@ -21,6 +21,7 @@ class MainScreen(functions: Array<FunctionComboItem>,
     private val controlPanel: ControlPanel = ControlPanel(functions, algorithms, computationManager)
     private val subManager = SubscriptionManager()
     private var lastPopulation: Population = listOf()
+    private var counter = 0
 
     init
     {
@@ -47,8 +48,15 @@ class MainScreen(functions: Array<FunctionComboItem>,
         this.subManager += computationManager.onModelChanged.subscribe { model ->
             this.redrawChart(model)
         }
+
         this.subManager += computationManager.onPopulationGenerated.subscribe { population ->
+            counter++
             this.drawPopulation(computationManager.model, population)
+
+            if (counter % 4 == 0)
+            {
+                renderComponent(this.chart.canvas, "de$counter.png")
+            }
         }
     }
 

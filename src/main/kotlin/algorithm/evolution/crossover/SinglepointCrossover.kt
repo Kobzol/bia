@@ -1,4 +1,4 @@
-package algorithm.ga.crossover
+package algorithm.evolution.crossover
 
 import algorithm.Individual
 import algorithm.Population
@@ -6,8 +6,6 @@ import java.util.*
 
 class SinglepointCrossover(chance: Float): Crossover(chance)
 {
-    private val random = Random()
-
     override fun crossover(parents: Population, individual: Individual): Individual
     {
         if (!this.shouldCross()) return individual

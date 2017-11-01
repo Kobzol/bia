@@ -1,4 +1,4 @@
-package algorithm.ga.selection
+package algorithm.evolution.selection
 
 import algorithm.FitnessEvaluator
 import algorithm.Individual

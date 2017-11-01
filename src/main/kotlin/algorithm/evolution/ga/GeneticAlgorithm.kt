@@ -1,9 +1,9 @@
-package algorithm.ga
+package algorithm.evolution.ga
 
 import algorithm.*
-import algorithm.ga.crossover.Crossover
-import algorithm.ga.mutation.Mutation
-import algorithm.ga.selection.Selection
+import algorithm.evolution.crossover.Crossover
+import algorithm.evolution.mutation.Mutation
+import algorithm.evolution.selection.Selection
 import algorithm.util.sample
 import java.util.*
 
@@ -33,7 +33,8 @@ class GeneticAlgorithm(override var population: Population,
         for (i in this.elitismCount until this.population.size)
         {
             val selectedParents = sample(parents as ArrayList<Individual>, 2, this.random)
-            population.add(this.mutation.mutate(this.crossover.crossover(selectedParents, this.population[i])))
+            population.add(this.mutation.mutate(this.crossover.crossover(selectedParents, this.population[i]),
+                    this.population))
         }
 
         this.population = population
