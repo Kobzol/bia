@@ -9,7 +9,7 @@ class App
 {
     private val computationManager: ComputationManager
     private val mainScreen: MainScreen
-    private val render = true
+    private val render = false
 
     init
     {

@@ -57,6 +57,8 @@ class SOMA(override var population: Population,
 
     private fun generatePerturbation(bounds: Array<Bounds>): FloatArray
     {
-        return bounds.map { this.random.nextInt(2).toFloat() }.toFloatArray()
+        return bounds.map {
+            if (this.random.nextFloat() < this.prt) 0.0f else 1.0f
+        }.toFloatArray()
     }
 }

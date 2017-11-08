@@ -75,7 +75,7 @@ class MainScreen(functions: Array<FunctionComboItem>,
             if (this.render)
             {
                 this.renderCounter += 1
-                //renderComponent(this.chart.canvas, "de${this.renderCounter}.png")
+                renderComponent(this.chart.canvas, "${this.renderCounter}.png")
             }
         }
     }

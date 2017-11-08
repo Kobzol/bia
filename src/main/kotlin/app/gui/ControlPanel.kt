@@ -145,17 +145,21 @@ class ControlPanel(functions: Array<FunctionComboItem>,
             {
                 algorithm.runIteration()
 
-                if (!added && ArrayList<algorithm.Individual>(algorithm.population).sortedDescending()
-                        .find { it.fitness == 0.0f } != null)
+                if (!added && algorithm.population.find { it.fitness!! >= -0.01f } != null)
                 {
-                    firstToZeroSum += iter
+                    firstToZeroSum += iter + 1
                     added = true
                 }
             }
 
+            if (!added)
+            {
+                firstToZeroSum = iterations
+            }
+
             val end = System.nanoTime()
 
-            zeroSum += algorithm.population.sortedDescending().takeWhile { it.fitness == 0.0f }.size
+            zeroSum += algorithm.population.sortedDescending().takeWhile { it.fitness!! >= -0.01f }.size
             calcSum += FunctionFitness.COUNTER
 
             val time = (end - start) / 1000000.0
