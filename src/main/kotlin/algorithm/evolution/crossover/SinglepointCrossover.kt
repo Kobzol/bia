@@ -4,14 +4,16 @@ import algorithm.Individual
 import algorithm.Population
 import java.util.*
 
-class SinglepointCrossover(chance: Float): Crossover(chance)
+class SinglepointCrossover: Crossover
 {
-    override fun crossover(parents: Population, individual: Individual): Individual
+    private val random = Random()
+
+    override fun crossover(chance: Float, parents: Population, individual: Individual): Individual
     {
-        if (!this.shouldCross()) return individual
+        if (this.random.nextFloat() >= chance) return individual
 
         val dataSize = parents[0].data.size
-        val offspring = Individual(parents[0].data.clone())
+        val offspring = parents[0].cloneWithData(parents[0].data.clone())
         val split = this.random.nextInt(dataSize)
         for (i in 0 until split)
         {

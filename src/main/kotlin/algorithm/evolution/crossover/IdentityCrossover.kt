@@ -3,7 +3,7 @@ package algorithm.evolution.crossover
 import algorithm.Individual
 import algorithm.Population
 
-class IdentityCrossover(chance: Float): Crossover(chance)
+class IdentityCrossover: Crossover
 {
-    override fun crossover(parents: Population, individual: Individual): Individual = individual
+    override fun crossover(chance: Float, parents: Population, individual: Individual): Individual = individual
 }

@@ -9,6 +9,7 @@ class App
 {
     private val computationManager: ComputationManager
     private val mainScreen: MainScreen
+    private val render = true
 
     init
     {
@@ -17,10 +18,9 @@ class App
 
         this.computationManager = ComputationManager(
                 functions[0].model,
-                ControlPanel.DEFAULT_ITERATIONS,
-                false
+                ControlPanel.DEFAULT_ITERATIONS
         )
-        this.mainScreen = MainScreen(functions, algorithms, this.computationManager)
+        this.mainScreen = MainScreen(functions, algorithms, this.computationManager, this.render)
     }
 
     fun show()

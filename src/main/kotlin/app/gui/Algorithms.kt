@@ -12,6 +12,8 @@ class AlgorithmComboItem(val settings: AlgorithmSettings)
 fun createAlgorithms(): Array<AlgorithmComboItem>
 {
     return arrayOf(
+            AlgorithmComboItem(JADESettings("JADE")),
+            AlgorithmComboItem(JDESettings("JDE")),
             AlgorithmComboItem(DESettings("DE")),
             AlgorithmComboItem(GASettings("GA")),
             AlgorithmComboItem(PSOSettings("PSO")),

@@ -40,4 +40,8 @@ class FunctionFitness(private val function: Function,
         }
         else -fitness
     }
+
+    companion object {
+        var COUNTER = 0
+    }
 }

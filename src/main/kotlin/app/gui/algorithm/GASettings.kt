@@ -19,8 +19,10 @@ class GASettings(name: String): AlgorithmSettings(name)
     private var populationSize: Int = 100
     private var elitismCount: Int = 1
     private var selection: Selection = TournamentSelection(0.1f, 20)
-    private var crossover: Crossover = SinglepointCrossover(0.85f)
+    private var crossover: Crossover = SinglepointCrossover()
+    private var crossoverChance: Float = 0.85f
     private var mutationType: MutationType = MutationType.Offset
+    private var mutationChance: Float = 0.05f
 
     override fun createGUI(root: JComponent)
     {
@@ -37,14 +39,20 @@ class GASettings(name: String): AlgorithmSettings(name)
         })
         this.addCombobox(root, "Crossover:", arrayOf(
                 SettingsComboItem("Singlepoint", this.crossover),
-                SettingsComboItem("Identity", IdentityCrossover(0.85f))
+                SettingsComboItem("Identity", IdentityCrossover())
         ), { value ->
             this.crossover = value
+        })
+        this.addTextbox(root, "Crossover chance:", this.crossoverChance, { value ->
+            this.crossoverChance = value.toFloatOrNull() ?: 0.85f
         })
         this.addCombobox<MutationType>(root, "Mutation:", arrayOf(
                 SettingsComboItem("Offset", this.mutationType)
         ), { value ->
             this.mutationType = value
+        })
+        this.addTextbox(root, "Mutation chance:", this.mutationChance, { value ->
+            this.mutationChance = value.toFloatOrNull() ?: 0.05f
         })
     }
 
@@ -55,7 +63,9 @@ class GASettings(name: String): AlgorithmSettings(name)
                 this.elitismCount,
                 this.selection,
                 this.crossover,
+                this.crossoverChance,
                 this.createMutation(this.mutationType, model),
+                this.mutationChance,
                 model.bounds, evaluator
         )
     }
@@ -64,8 +74,8 @@ class GASettings(name: String): AlgorithmSettings(name)
     {
         return when (type)
         {
-            MutationType.Offset -> OffsetMutation(0.05f, model.bounds)
-            else -> OffsetMutation(0.05f, model.bounds)
+            MutationType.Offset -> OffsetMutation(model.bounds)
+            else -> OffsetMutation(model.bounds)
         }
     }
 }

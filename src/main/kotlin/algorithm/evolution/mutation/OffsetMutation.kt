@@ -6,17 +6,16 @@ import algorithm.Population
 import algorithm.util.clamp
 import java.util.*
 
-class OffsetMutation(private val chance: Float,
-                     private val bounds: Array<Bounds>): Mutation
+class OffsetMutation(private val bounds: Array<Bounds>): Mutation
 {
     private val random = Random()
 
-    override fun mutate(individual: Individual, population: Population): Individual
+    override fun mutate(chance: Float, individual: Individual, population: Population): Individual
     {
-        val mutated = Individual(individual.data.clone())
+        val mutated = individual.cloneWithData(individual.data.clone())
         for (i in individual.data.indices)
         {
-            if (this.random.nextFloat() < this.chance)
+            if (this.random.nextFloat() < chance)
             {
                 mutated.data[i] += this.random.nextGaussian().toFloat() * 0.2f
                 mutated.data[i] = clamp(mutated.data[i], this.bounds[i].min, this.bounds[i].max)

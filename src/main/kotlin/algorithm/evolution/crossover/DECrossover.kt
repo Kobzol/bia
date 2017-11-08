@@ -2,20 +2,24 @@ package algorithm.evolution.crossover
 
 import algorithm.Individual
 import algorithm.Population
+import java.util.*
 
-class DECrossover(chance: Float): Crossover(chance)
+class DECrossover: Crossover
 {
-    override fun crossover(parents: Population, individual: Individual): Individual
+    private val random = Random()
+
+    override fun crossover(chance: Float, parents: Population, individual: Individual): Individual
     {
         val orig = parents[0]
         val fixedIndex = this.random.nextInt(individual.data.size)
 
-        return Individual(individual.data.mapIndexed { index, _ ->
-            if (index == fixedIndex || this.shouldCross())
+        val data = individual.data.mapIndexed { index, _ ->
+            if (index == fixedIndex || this.random.nextFloat() < chance)
             {
                 individual.data[index]
             }
             else orig.data[index]
-        }.toFloatArray())
+        }.toFloatArray()
+        return individual.cloneWithData(data)
     }
 }

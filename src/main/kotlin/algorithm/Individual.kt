@@ -16,4 +16,11 @@ open class Individual(var data: FloatArray): Comparable<Individual>
     {
         return "$fitness " + this.data.map { it.toString() }
     }
+
+    open fun cloneWithData(data: FloatArray): Individual
+    {
+        val ind = Individual(data)
+        ind.fitness = this.fitness
+        return ind
+    }
 }

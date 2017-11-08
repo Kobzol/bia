@@ -28,6 +28,7 @@ class ControlPanel(functions: Array<FunctionComboItem>,
     private val algorithmContainer: JPanel = JPanel()
     private val generatePopulationButton: JButton = JButton("Generate population")
     private val startButton: JButton = JButton("Start")
+    private val profileButton: JButton = JButton("Profile")
     private val stopButton: JButton = JButton("Stop")
 
     private val subscriptionManager = SubscriptionManager()
@@ -92,6 +93,11 @@ class ControlPanel(functions: Array<FunctionComboItem>,
         }
         this.startButton.alignmentX = Component.CENTER_ALIGNMENT
 
+        this.profileButton.addActionListener {
+            this.profile()
+        }
+        this.profileButton.alignmentX = Component.CENTER_ALIGNMENT
+
         this.stopButton.addActionListener {
             this.computationManager.stopComputation()
         }
@@ -109,12 +115,56 @@ class ControlPanel(functions: Array<FunctionComboItem>,
         this.add(this.algorithmContainer)
         this.add(this.generatePopulationButton)
         this.add(this.startButton)
+        this.add(this.profileButton)
         this.add(this.stopButton)
 
         computationManager.onStateChanged.subscribe { running ->
             this.startButton.isEnabled = !running
             this.stopButton.isEnabled = running
         }
+    }
+
+    private fun profile()
+    {
+        val count = 10
+        var sum = 0.0
+        var calcSum = 0
+        var zeroSum = 0
+        var firstToZeroSum = 0
+        val iterations = this.getSelectedIterations()
+
+        for (i in 0 until count)
+        {
+            val start = System.nanoTime()
+
+            FunctionFitness.COUNTER = 0
+            val algorithm = this.createAlgorithm()
+
+            var added = false
+            for (iter in 0 until iterations)
+            {
+                algorithm.runIteration()
+
+                if (!added && ArrayList<algorithm.Individual>(algorithm.population).sortedDescending()
+                        .find { it.fitness == 0.0f } != null)
+                {
+                    firstToZeroSum += iter
+                    added = true
+                }
+            }
+
+            val end = System.nanoTime()
+
+            zeroSum += algorithm.population.sortedDescending().takeWhile { it.fitness == 0.0f }.size
+            calcSum += FunctionFitness.COUNTER
+
+            val time = (end - start) / 1000000.0
+            System.out.println("Time: $time ms")
+            sum += time
+        }
+
+        System.out.println("Avg time: ${sum / count}, avg calc: ${calcSum / count}, " +
+                "avg zero results: ${zeroSum / count}, avg iter to zero: ${firstToZeroSum / count}")
     }
 
     fun getSelectedModel(): FunctionModel

@@ -3,16 +3,17 @@ package algorithm.util
 import java.util.*
 import java.util.Collections.swap
 
-fun <T> sample(list: ArrayList<T>, count: Int, random: Random): List<T>
+fun <T> sample(list: List<T>, count: Int, random: Random): List<T>
 {
-    val sample = arrayListOf<T>()
-    var size = list.size
+    val sample = mutableListOf<T>()
+    val modifiedList = ArrayList<T>(list)
+    var size = modifiedList.size
 
     for (i in 0 until count)
     {
         val index = random.nextInt(size)
-        sample.add(list[index])
-        swap(list, index, size - 1)
+        sample.add(modifiedList[index])
+        swap(modifiedList, index, size - 1)
         size -= 1
     }
 

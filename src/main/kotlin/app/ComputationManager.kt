@@ -6,11 +6,9 @@ import algorithm.Population
 import io.reactivex.Observable
 import io.reactivex.schedulers.Schedulers
 import io.reactivex.subjects.PublishSubject
-import java.util.concurrent.TimeUnit
 
 class ComputationManager(model: FunctionModel,
-                         var iterationCount: Int,
-                         private val throttle: Boolean = true)
+                         var iterationCount: Int)
 {
     private val modelChangedStream = PublishSubject.create<FunctionModel>()
     private val computationStateStream = PublishSubject.create<Boolean>()
@@ -42,12 +40,7 @@ class ComputationManager(model: FunctionModel,
         val computation = this.createComputation(algorithm)
         this.computationStateStream.onNext(true)
 
-        var pipeline = computation.populationStream
-        if (this.throttle)
-        {
-            pipeline = pipeline.sample(250, TimeUnit.MILLISECONDS)
-        }
-        this.subManager += pipeline
+        this.subManager += computation.populationStream
                 .subscribe({ population ->
                     this.generation = population
                 }, { error ->

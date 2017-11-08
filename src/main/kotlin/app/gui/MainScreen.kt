@@ -9,19 +9,22 @@ import app.gui.chart.Jzy3DChart
 import app.gui.chart.SurfaceChart
 import app.gui.chart.SurfacePlotChart
 import java.awt.BorderLayout
+import java.util.concurrent.TimeUnit
 import javax.swing.JFrame
 import javax.swing.SwingUtilities
 import javax.swing.WindowConstants
 
 class MainScreen(functions: Array<FunctionComboItem>,
                  algorithms: Array<AlgorithmComboItem>,
-                 computationManager: ComputationManager): JFrame("BIA")
+                 computationManager: ComputationManager,
+                 private val render: Boolean = false): JFrame("BIA")
 {
     private var chart: SurfaceChart
     private val controlPanel: ControlPanel = ControlPanel(functions, algorithms, computationManager)
     private val subManager = SubscriptionManager()
     private var lastPopulation: Population = listOf()
-    private var counter = 0
+
+    private var renderCounter = 0
 
     init
     {
@@ -49,14 +52,10 @@ class MainScreen(functions: Array<FunctionComboItem>,
             this.redrawChart(model)
         }
 
-        this.subManager += computationManager.onPopulationGenerated.subscribe { population ->
-            counter++
+        this.subManager += computationManager.onPopulationGenerated
+                .sample(250, TimeUnit.MILLISECONDS)
+                .subscribe { population ->
             this.drawPopulation(computationManager.model, population)
-
-            if (counter % 4 == 0)
-            {
-                renderComponent(this.chart.canvas, "de$counter.png")
-            }
         }
     }
 
@@ -72,6 +71,12 @@ class MainScreen(functions: Array<FunctionComboItem>,
         SwingUtilities.invokeLater {
             this.lastPopulation = best
             this.redrawChart(model, best)
+
+            if (this.render)
+            {
+                this.renderCounter += 1
+                //renderComponent(this.chart.canvas, "de${this.renderCounter}.png")
+            }
         }
     }
 

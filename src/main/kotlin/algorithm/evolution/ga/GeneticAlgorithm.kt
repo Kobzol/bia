@@ -11,7 +11,9 @@ class GeneticAlgorithm(override var population: Population,
                        private val elitismCount: Int,
                        private val selection: Selection,
                        private val crossover: Crossover,
+                       private val crossoverChance: Float,
                        private val mutation: Mutation,
+                       private val mutationChance: Float,
                        bounds: Array<Bounds>, evaluator: FitnessEvaluator): Algorithm(bounds, evaluator)
 {
     private val random = Random()
@@ -33,12 +35,19 @@ class GeneticAlgorithm(override var population: Population,
         for (i in this.elitismCount until this.population.size)
         {
             val selectedParents = sample(parents as ArrayList<Individual>, 2, this.random)
-            population.add(this.mutation.mutate(this.crossover.crossover(selectedParents, this.population[i]),
-                    this.population))
+            val ind = this.mutation.mutate(this.mutationChance,
+                    this.crossover.crossover(this.crossoverChance, selectedParents, this.population[i]),
+                    this.population)
+            this.evaluator.evaluate(ind)
+
+            if (ind > this.population[i])
+            {
+                population.add(ind)
+            }
+            else population.add(this.population[i])
         }
 
         this.population = population
-        this.evaluator.evaluate(this.population)
         return this.population
     }
 }
