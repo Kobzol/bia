@@ -48,7 +48,5 @@ class DESettings(name: String): AlgorithmSettings(name)
     }
 
     private fun createMutation(type: MutationType, model: FunctionModel): Mutation
-    {
-        return DERand1(model.bounds)
-    }
+            = DERand1(model.bounds)
 }

@@ -3,7 +3,7 @@ package app.gui.algorithm
 import algorithm.Algorithm
 import algorithm.FitnessEvaluator
 import algorithm.PopulationGenerator
-import algorithm.soma.SOMA
+import algorithm.soma.*
 import app.FunctionModel
 import javax.swing.JComponent
 
@@ -13,6 +13,7 @@ class SOMASettings(name: String) : AlgorithmSettings(name)
     private var pathLength: Float = 1.5f
     private var step: Float = 0.11f
     private var prt: Float = 0.2f
+    private var migration: SOMAMigrationType = SOMAMigrationType.AllToOne
 
     override fun createGUI(root: JComponent)
     {
@@ -28,6 +29,14 @@ class SOMASettings(name: String) : AlgorithmSettings(name)
         this.addTextbox(root, "PRT chance:", this.prt, { value ->
             this.prt = value.toFloatOrNull() ?: 0.2f
         })
+        this.addCombobox<SOMAMigrationType>(root, "Migration:", arrayOf(
+                SettingsComboItem("AllToOne", SOMAMigrationType.AllToOne),
+                SettingsComboItem("AllToAll", SOMAMigrationType.AllToAll),
+                SettingsComboItem("AllToAllAdaptive", SOMAMigrationType.AllToAllAdaptive),
+                SettingsComboItem("AllToRandom", SOMAMigrationType.AllToRandom)
+        ), { value ->
+            this.migration = value
+        })
     }
 
     override fun createAlgorithm(model: FunctionModel, evaluator: FitnessEvaluator): Algorithm
@@ -36,8 +45,18 @@ class SOMASettings(name: String) : AlgorithmSettings(name)
                 this.pathLength,
                 this.step,
                 this.prt,
+                this.createMigration(this.migration),
                 model.bounds,
                 evaluator
         )
     }
+
+    private fun createMigration(migration: SOMAMigrationType): Migration
+            = when (migration)
+            {
+                SOMAMigrationType.AllToOne -> AllToOne()
+                SOMAMigrationType.AllToAll -> AllToAll()
+                SOMAMigrationType.AllToAllAdaptive -> AllToAllAdaptive()
+                SOMAMigrationType.AllToRandom -> AllToRandom()
+            }
 }
