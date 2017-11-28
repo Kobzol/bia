@@ -49,4 +49,31 @@ class VRPLoader
                     minTruckCount)
         }
     }
+
+    fun loadResult(path: String): Pair<List<List<Int>>, Float>
+    {
+        val routes: ArrayList<List<Int>> = arrayListOf()
+
+        BufferedReader(InputStreamReader(FileInputStream(path))).use {
+            while (true)
+            {
+                val line = it.readLine()!!
+                if (line.startsWith("Route #"))
+                {
+                    val data = line.substring(line.indexOf(":") + 1)
+                            .split(" ")
+                            .filter { it.isNotEmpty() }
+                            .map { it.toInt() }
+                    routes.add(data)
+                }
+                else
+                {
+                    val cost = line.substring(line.indexOf(" ") + 1).toFloat()
+                    return Pair(routes, cost)
+                }
+            }
+        }
+
+        return Pair(routes, 0.0f)
+    }
 }
