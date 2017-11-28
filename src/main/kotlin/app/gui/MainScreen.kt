@@ -87,11 +87,9 @@ class MainScreen(functions: Array<FunctionComboItem>,
     }
 
     private fun createChart(model: FunctionModel, type: ChartType): SurfaceChart
-    {
-        return when (type)
-        {
-            ChartType.Jzy3D -> Jzy3DChart(model)
-            ChartType.SurfacePlot -> SurfacePlotChart(model)
-        }
-    }
+            = when (type)
+            {
+                ChartType.Jzy3D -> Jzy3DChart(model)
+                ChartType.SurfacePlot -> SurfacePlotChart(model)
+            }
 }

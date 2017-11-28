@@ -16,24 +16,21 @@ interface FitnessEvaluator
     fun evaluate(data: FloatArray): Float
     fun evaluate(population: Population, assign: Boolean = true)
     {
-        population.parallelStream().forEach { this.evaluate(it, assign) }
+        population.stream().forEach { this.evaluate(it, assign) }
     }
     fun <T : Individual> findBest(population: List<T>): T
-    {
-        return population.maxBy { it.fitness!! }!!
-    }
+            = population.maxBy { it.fitness!! }!!
 }
 
 class FunctionFitness(private val function: Function,
                       private val maximize: Boolean = false): FitnessEvaluator
 {
     override fun evaluate(data: FloatArray): Float
-    {
-        return this.normalizeFitness(this.function.calculate(*data))
-    }
+            = this.normalizeFitness(this.function.calculate(*data))
 
     private fun normalizeFitness(fitness: Float): Float
     {
+        FunctionFitness.COUNTER += 1
         return if (this.maximize)
         {
             fitness
