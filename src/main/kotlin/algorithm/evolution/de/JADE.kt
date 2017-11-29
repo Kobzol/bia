@@ -57,7 +57,7 @@ class JADE(override var population: List<Individual>,
             else nextPopulation.add(current)
         }
 
-        Collections.shuffle(this.archive)
+        this.archive.shuffle()
         this.archive = this.archive.subList(0, 5)
 
         this.ucr = (1 - this.c) * this.ucr + this.c * crs.average().toFloat()

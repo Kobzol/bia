@@ -23,7 +23,8 @@ class DE(override var population: Population,
         for (i in this.population.indices)
         {
             val mutated = this.mutation.mutate(this.mutationChance, this.population[i], this.population)
-            val crossed = this.crossover.crossover(this.crossoverChance, listOf(this.population[i]), mutated)
+            val crossed = this.crossover.crossover(this.crossoverChance, listOf(this.population[i], mutated),
+                    this.population[i])
 
             this.evaluator.evaluate(crossed)
             if (crossed > this.population[i])

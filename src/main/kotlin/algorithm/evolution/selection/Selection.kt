@@ -6,7 +6,7 @@ import algorithm.Population
 
 abstract class Selection
 {
-    abstract fun select(population: ArrayList<Individual>, evaluator: FitnessEvaluator): Population
+    abstract fun select(population: List<Individual>, evaluator: FitnessEvaluator): Population
 
     protected fun assignFitness(population: Population, evaluator: FitnessEvaluator): Float
     {

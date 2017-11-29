@@ -3,8 +3,6 @@ package algorithm.evolution.mutation
 import algorithm.Bounds
 import algorithm.Individual
 import algorithm.Population
-import algorithm.evolution.mutation.Mutation
-import algorithm.util.clamp
 import java.util.*
 
 class SwapMutation(val bounds: Array<Bounds>) : Mutation
@@ -23,7 +21,7 @@ class SwapMutation(val bounds: Array<Bounds>) : Mutation
             data[pos1] = data[pos2]
             data[pos2] = tmp
 
-            return Individual(data)
+            return individual.cloneWithData(data)
         }
         /*for (i in data.indices)
         {

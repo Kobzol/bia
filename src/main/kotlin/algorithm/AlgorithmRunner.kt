@@ -2,7 +2,7 @@ package algorithm
 
 import io.reactivex.Observable
 
-class AlgorithmRunner
+class AlgorithmRunner(private val sleep: Int = 0)
 {
     fun iterate(algorithm: Algorithm, count: Int): Observable<Population>
     {
@@ -11,6 +11,11 @@ class AlgorithmRunner
             {
                 observer.onNext(algorithm.runIteration())
                 if (algorithm.isFinished()) break
+
+                if (this.sleep > 0)
+                {
+                    Thread.sleep(this.sleep.toLong())
+                }
             }
 
             observer.onComplete()

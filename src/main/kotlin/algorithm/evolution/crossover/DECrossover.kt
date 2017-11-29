@@ -11,12 +11,12 @@ class DECrossover: Crossover
     override fun crossover(chance: Float, parents: Population, individual: Individual): Individual
     {
         val orig = parents[0]
-        val fixedIndex = this.random.nextInt(individual.data.size)
+        val fixedIndex = this.random.nextInt(parents[1].data.size)
 
-        val data = individual.data.mapIndexed { index, _ ->
+        val data = parents[1].data.mapIndexed { index, _ ->
             if (index == fixedIndex || this.random.nextFloat() < chance)
             {
-                individual.data[index]
+                parents[1].data[index]
             }
             else orig.data[index]
         }.toFloatArray()

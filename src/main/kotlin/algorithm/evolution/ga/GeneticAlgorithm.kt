@@ -21,6 +21,7 @@ class GeneticAlgorithm(override var population: Population,
     init
     {
         this.evaluator.evaluate(this.population)
+        this.population = this.population.sortedDescending()
     }
 
     override fun runIteration(): Population
@@ -28,10 +29,10 @@ class GeneticAlgorithm(override var population: Population,
         val population = ArrayList<Individual>(this.population.size)
         if (this.elitismCount > 0)
         {
-            population.addAll(this.population.sortedDescending().take(this.elitismCount))
+            population.addAll(this.population.take(this.elitismCount))
         }
 
-        val parents = this.selection.select(this.population as ArrayList<Individual>, this.evaluator)
+        val parents = this.selection.select(this.population, this.evaluator)
         for (i in this.elitismCount until this.population.size)
         {
             val selectedParents = sample(parents as ArrayList<Individual>, 2, this.random)
@@ -47,7 +48,7 @@ class GeneticAlgorithm(override var population: Population,
             else population.add(this.population[i])
         }
 
-        this.population = population
+        this.population = population.sortedDescending()
         return this.population
     }
 }
