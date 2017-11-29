@@ -4,11 +4,12 @@ import algorithm.Algorithm
 import algorithm.AlgorithmRunner
 import algorithm.Individual
 import algorithm.Population
-import algorithm.evolution.ga.GeneticAlgorithm
+import algorithm.aco.ACO
 import algorithm.evolution.mutation.SwapMutation
 import algorithm.evolution.selection.TournamentSelection
+import algorithm.evolution.ga.GeneticAlgorithm
 import app.SubscriptionManager
-import app.gui.renderComponentFX
+import app.gui.profile
 import io.reactivex.schedulers.Schedulers
 import javafx.application.Application
 import javafx.application.Platform
@@ -63,15 +64,22 @@ class TSPWindow: Application()
         root.children.add(calcButton)
         root.children.add(this.canvas)
 
-        this.drawTsp(this.instance)
         /*val pop = this.calculateSync()
         this.drawTsp(this.instance, pop.sortedDescending()[0])*/
+
+        profile(::createACO, 1000, 871.117f)
+        profile(::createGA, 1000, 871.117f)
 
         primaryStage.scene = Scene(root)
         primaryStage.show()
     }
 
-    private fun createAlgorithm()
+    private fun createACO(): Algorithm
+    {
+        this.algorithm = ACO(this.instance, this.instance.vertices.size)
+        return this.algorithm
+    }
+    private fun createGA(): Algorithm
     {
         val pop = this.generatePopulation(this.instance, 50)
         this.algorithm = GeneticAlgorithm(pop, 0,
@@ -80,9 +88,7 @@ class TSPWindow: Application()
                 SwapMutation(arrayOf()), 0.05f,
                 arrayOf(), this.evaluator
         )
-
-        /*this.algorithm = DE(pop, TSPCrossover(), 0.85f,
-                SwapMutation(arrayOf()), 0.05f, arrayOf(), this.evaluator)*/
+        return this.algorithm
     }
 
     private fun calculateSync(): Population
@@ -91,7 +97,7 @@ class TSPWindow: Application()
         var bestPop = listOf<Individual>()
         for (i in 0 until 100)
         {
-            this.createAlgorithm()
+            this.createACO()
             val pop = this.algorithmRunner.iterateSync(this.algorithm, 1000)
             val fitness = -this.evaluator.findBest(pop).fitness!!
             if (fitness < best)
@@ -107,7 +113,7 @@ class TSPWindow: Application()
 
     private fun calculate()
     {
-        this.createAlgorithm()
+        this.createACO()
 
         this.subManager.unsubscribe()
         this.subManager += this.algorithmRunner

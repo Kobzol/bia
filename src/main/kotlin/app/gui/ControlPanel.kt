@@ -126,49 +126,7 @@ class ControlPanel(functions: Array<FunctionComboItem>,
 
     private fun profile()
     {
-        val count = 10
-        var sum = 0.0
-        var calcSum = 0
-        var zeroSum = 0
-        var firstToZeroSum = 0
-        val iterations = this.getSelectedIterations()
-
-        for (i in 0 until count)
-        {
-            val start = System.nanoTime()
-
-            FunctionFitness.COUNTER = 0
-            val algorithm = this.createAlgorithm()
-
-            var added = false
-            for (iter in 0 until iterations)
-            {
-                algorithm.runIteration()
-
-                if (!added && algorithm.population.find { it.fitness!! >= -0.01f } != null)
-                {
-                    firstToZeroSum += iter + 1
-                    added = true
-                }
-            }
-
-            if (!added)
-            {
-                firstToZeroSum = iterations
-            }
-
-            val end = System.nanoTime()
-
-            zeroSum += algorithm.population.sortedDescending().takeWhile { it.fitness!! >= -0.01f }.size
-            calcSum += FunctionFitness.COUNTER
-
-            val time = (end - start) / 1000000.0
-            System.out.println("Time: $time ms")
-            sum += time
-        }
-
-        System.out.println("Avg time: ${sum / count}, avg calc: ${calcSum / count}, " +
-                "avg zero results: ${zeroSum / count}, avg iter to zero: ${firstToZeroSum / count}")
+        profile( { this.createAlgorithm() }, this.getSelectedIterations(), 0.0f)
     }
 
     fun getSelectedModel(): FunctionModel
