@@ -30,10 +30,12 @@ class Ant(var city: Int, cityCount: Int): Individual(FloatArray(cityCount))
 class ACO(val instance: TSPInstance, val antCount: Int)
     : Algorithm(arrayOf(), TSPEvaluator(instance))
 {
-    override var population: Population = listOf<Ant>()
+    var best: Ant? = null
+    override val population: Population
+            get() = if (this.best != null) listOf(this.best!!) else listOf()
 
     private val random = Random()
-    private val pheromones = DoubleArray(instance.vertices.size * instance.vertices.size, { 1.0 })
+    private val pheromones = DoubleArray(instance.vertices.size * instance.vertices.size, { 0.05 })
 
     private val alfa = 1.0
     private val beta = 1.0
@@ -103,17 +105,20 @@ class ACO(val instance: TSPInstance, val antCount: Int)
         }
 
         this.evaluator.evaluate(ants)
-        this.population = ants
+        val bestpop = this.evaluator.findBest(ants)
+        if (this.best == null || bestpop > this.best!!)
+        {
+            this.best = bestpop
+        }
+
         return this.population
     }
 
     private fun getProbabilities(ant: Ant, cities: List<Int>): DoubleArray
     {
         fun value(city: Int) =
-                Math.max(1e-5,
-                        Math.pow(this.getPheromone(ant.city, city), this.alfa) *
-                        Math.pow(1.0 / this.distance(ant.city, city), this.beta)
-                )
+                Math.pow(this.getPheromone(ant.city, city), this.alfa) *
+                Math.pow(1.0 / this.distance(ant.city, city), this.beta)
 
         val rawValues = cities.map(::value)
         val sum = rawValues.sum()

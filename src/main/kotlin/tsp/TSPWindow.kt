@@ -10,6 +10,7 @@ import algorithm.evolution.selection.TournamentSelection
 import algorithm.evolution.ga.GeneticAlgorithm
 import app.SubscriptionManager
 import app.gui.profile
+import app.gui.renderComponentFX
 import io.reactivex.schedulers.Schedulers
 import javafx.application.Application
 import javafx.application.Platform
@@ -37,7 +38,7 @@ class TSPWindow: Application()
     private lateinit var evaluator: TSPEvaluator
     private lateinit var instance: TSPInstance
     private lateinit var algorithm: Algorithm
-    private val algorithmRunner = AlgorithmRunner(5)
+    private val algorithmRunner = AlgorithmRunner(100)
     private val subManager = SubscriptionManager()
 
     companion object
@@ -67,9 +68,6 @@ class TSPWindow: Application()
         /*val pop = this.calculateSync()
         this.drawTsp(this.instance, pop.sortedDescending()[0])*/
 
-        profile(::createACO, 1000, 871.117f)
-        profile(::createGA, 1000, 871.117f)
-
         primaryStage.scene = Scene(root)
         primaryStage.show()
     }
@@ -93,14 +91,14 @@ class TSPWindow: Application()
 
     private fun calculateSync(): Population
     {
-        var best = Float.MAX_VALUE
+        var best = Float.MIN_VALUE
         var bestPop = listOf<Individual>()
         for (i in 0 until 100)
         {
             this.createACO()
             val pop = this.algorithmRunner.iterateSync(this.algorithm, 1000)
-            val fitness = -this.evaluator.findBest(pop).fitness!!
-            if (fitness < best)
+            val fitness = this.evaluator.findBest(pop).fitness!!
+            if (fitness > best)
             {
                 best = fitness
                 bestPop = pop
@@ -115,14 +113,25 @@ class TSPWindow: Application()
     {
         this.createACO()
 
+        var count = 0
+        var fitness = -10000.0f
+
         this.subManager.unsubscribe()
         this.subManager += this.algorithmRunner
                 .iterate(this.algorithm, 1000)
                 .subscribeOn(Schedulers.computation())
                 .sample(50, TimeUnit.MILLISECONDS)
                 .subscribe({ pop ->
+                    val best = this.evaluator.findBest(pop)
+
                     Platform.runLater {
-                        this.drawTsp(this.instance, this.evaluator.findBest(pop))
+                        this.drawTsp(this.instance, best)
+                        if (best.fitness!! > fitness)
+                        {
+                            fitness = best.fitness!!
+                            renderComponentFX(this.canvas, "aco-$count.png")
+                            count += 1
+                        }
                     }
                 }, { err ->
                     err.printStackTrace()
@@ -132,6 +141,7 @@ class TSPWindow: Application()
 
                     Platform.runLater {
                         this.drawTsp(this.instance, best)
+                        renderComponentFX(this.canvas, "aco-$count.png")
                     }
                 })
     }
