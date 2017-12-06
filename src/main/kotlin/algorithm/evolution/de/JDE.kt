@@ -69,7 +69,7 @@ class JDE(override var population: List<JDEIndividual>,
     private fun evolve(individual: JDEIndividual, population: List<JDEIndividual>): JDEIndividual
     {
         val mutated = this.mutation.mutate(individual.mutationRate, individual, population)
-        val crossed = this.crossover.crossover(individual.crossoverRate, listOf(individual), mutated)
+        val crossed = this.crossover.crossover(individual.crossoverRate, listOf(individual, mutated), individual)
 
         this.evaluator.evaluate(crossed)
 

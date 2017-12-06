@@ -44,7 +44,7 @@ class JADE(override var population: List<Individual>,
             }.toFloatArray()
 
             val mutated = current.cloneWithData(data)
-            val crossed = this.crossover.crossover(cri, listOf(current), mutated)
+            val crossed = this.crossover.crossover(cri, listOf(current, mutated), current)
 
             this.evaluator.evaluate(crossed)
             if (crossed > current)
